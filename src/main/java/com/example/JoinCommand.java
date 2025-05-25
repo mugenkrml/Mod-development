@@ -11,7 +11,6 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class JoinCommand {
 
-    // 待機場所の座標（ここを変更してね）
     private static final int WAIT_X = 100;
     private static final int WAIT_Y = 65;
     private static final int WAIT_Z = 100;
@@ -29,10 +28,8 @@ public class JoinCommand {
 
                 ServerWorld world = player.getServerWorld();
 
-                // テレポート
                 player.teleport(world, WAIT_X, WAIT_Y, WAIT_Z, player.getYaw(), player.getPitch());
 
-                // タイトル送信
                 player.sendTitle(
                     Text.literal("待機中..."),
                     Text.literal("PvP開始までお待ちください"),
