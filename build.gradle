@@ -1,54 +1,66 @@
-plugins {
-	id 'fabric-loom' version '0.12.0'  // ← loomのバージョンを変更
-	id 'maven-publish'
+buildscript {
+    repositories {
+        maven {
+            url = 'https://maven.fabricmc.net/'
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'net.fabricmc:fabric-loom:0.12.65'  // ←安定版バージョンを指定
+    }
 }
+
+apply plugin: 'fabric-loom'
+apply plugin: 'maven-publish'
 
 version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+    archivesName = project.archives_base_name
 }
 
 repositories {
-	maven { url "https://maven.fabricmc.net/" } // Fabric API取得に必要
+    maven { url "https://maven.fabricmc.net/" }
+    mavenCentral()
 }
 
 dependencies {
-	// Minecraft & Fabric API
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 processResources {
-	inputs.property "version", project.version
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 java {
-	withSourcesJar()
-	sourceCompatibility = JavaVersion.VERSION_17  // ← Java 17に変更（1.19.2の推奨）
-	targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archives_base_name}" }
-	}
+    from("LICENSE") {
+        rename { "${it}_${project.archives_base_name}" }
+    }
 }
 
 publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
-		}
-	}
+    publications {
+        create("mavenJava", MavenPublication) {
+            artifactId = project.archives_base_name
+            from components.java
+        }
+    }
 }
+
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
